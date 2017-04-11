@@ -2,6 +2,9 @@
 
 \usepackage{fullpage,amssymb,amsthm,amsmath}
 
+\newcommand{\R}{\mathbb{R}}
+\DeclareMathOperator*{\argmin}{argmin}
+
 \begin{document}
 
 \title{Ranking Bandits}
@@ -10,6 +13,57 @@
 
 \section{Introduction}
 
+Learning a ranking function is one the of the basic problems in information
+retrieval systems. Given a user's query, an information retrieval system
+retrieves a set of \emph{candidate documents}; this is usually done by a keyword
+match. For each of the candidate documents, the system computes a feature vector
+(consisting of e.g. PageRank, frequencies of query words in the document and the
+corpus, etc.). Based on these feature vectors, a \emph{ranking function}
+computes an ordering (\emph{ranking}) of the candidate documents that is meant
+to capture the relative relevance of the candidate documents. The user will see
+the candidate documents presented in an order from top to bottom according to
+this ranking, so that the most relevant documents are at the top and the least
+relevant documents are at the bottom. Then, the user clicks on one of the
+documents.
 
+We consider the problem of learning the ranking function from the clicks in
+an online fashion. We consider ranking functions which, for every candidate
+document, compute a score, that is a linear combination of the features, orders
+the documents according to the score in decreasing order. We call such ranking
+functions \emph{linear ranking functions}.
+
+We formalize problem as an online learning problem with partial feedback. Each
+round of the game round $t$ corresponds to a user's query. We denote by $C_t$
+the set of candidate documents in round $t$. For simplicity, we assume that size
+of $|C_t| = N$ is the same in each round. (The problem formulation can be
+extended to a setting where size of $C_t$ changes from round to round.) In each
+round, based on the query, the set of candidate documents $C_t$, user's
+features, and any other side information, the nature produces $N$ feature
+vectors $f_1^{(t)}, f_2^{(t)}, \dots, f_N^{(t)} \in \R^d$, one feature vector
+for each document in $C_t$. As it will become clear shortly, we can assume
+without loss of generality $C_t = \{1,2,\dots,N\}$. Hence, $f_i^{(t)}$ is the
+feature vector of document $i$.
+
+We assume that the user, in his mind, implicitly chooses a non-empty subset $U_t
+\subset C_t$ of \emph{relevant documents}. The learning algorithm chooses an
+permutation $\pi_t$ of $C_t = \{1,2,\dots,N\}$ and the documents in $C_t$ are
+presented to the user in the order induced by $\pi_t$. That is, document $i \in
+C_t = \{1,2,\dots,N\}$ is presented at position $\pi_t(i)$ from the top. We
+assume that the user clicks on a relevant document closest to the top. That is,
+user clicks on the document $i \in U_t$ for which $\pi_t(i)$ is the smallest.
+
+The protocol can be summarized as follows:
+
+\begin{itemize}
+\item Nature produces feature vectors
+$f^{(t)}_1, f^{(t)}_2, \dots, f^{(t)}_N \in \R^d$
+and non-empty $U_t \subseteq \{1,2,\dots,N\}$.
+\item Learner chooses a permutation $\pi_t$ of $\{1,2,\dots,N\}$
+\item Learner observes user's click on the document $i_t = \argmin_{i \in U_t} \pi_t$
+\end{itemize}
+
+We assume that $(U_t, f_1^{(t)}, f_2^{(t)}, \dots f_N^{(t)})$ is generated from
+a distribution $D$ independently of other rounds and the ranking of the
+algorithm.
 
 \end{document}
