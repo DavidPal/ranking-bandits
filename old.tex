@@ -44,9 +44,9 @@ in round $t$. For simplicity, we assume that the size of $|C_t| = N$ is the same
 in each round. (The problem formulation can be extended to a setting where size
 of $C_t$ changes from round to round.) In each round, based on the query, the
 set of candidate documents $C_t$, user's features, and any other side
-information, the nature produces $N$ feature vectors $f_1^{(t)}, f_2^{(t)},
-\dots, f_N^{(t)} \in \R^d$. We can assume without loss of generality $C_t =
-\{1,2,\dots,N\}$. Hence, $f_i^{(t)}$ is the feature vector of the document $i$.
+information, the nature produces $N$ feature vectors $x_1^{(t)}, x_2^{(t)},
+\dots, x_N^{(t)} \in \R^d$. We can assume without loss of generality $C_t =
+\{1,2,\dots,N\}$. Hence, $x_i^{(t)}$ is the feature vector of the document $i$.
 
 We assume that the user chooses a non-empty subset $U_t
 \subset C_t = \{1,2,\dots,N\}$ of \emph{relevant documents}. The learning
@@ -61,19 +61,52 @@ The protocol of the game can be summarized as follows:
 
 \begin{itemize}
 \item Nature produces feature vectors
-$f^{(t)}_1, f^{(t)}_2, \dots, f^{(t)}_N \in \R^d$
+$x^{(t)}_1, x^{(t)}_2, \dots, x^{(t)}_N \in \R^d$
 and non-empty $U_t \subseteq \{1,2,\dots,N\}$.
 \item Learner chooses a permutation $\pi_t$ of $\{1,2,\dots,N\}$
 \item Learner observes user's click on the document $i_t = \argmin_{i \in U_t} \pi_t$
 \end{itemize}
 
-We assume that $(U_t, f_1^{(t)}, f_2^{(t)}, \dots f_N^{(t)})$ is generated from
+We assume that $Z_t = (U_t, x_1^{(t)}, x_2^{(t)}, \dots x_N^{(t)})$ is generated from
 an arbitrary fixed distribution $D$ that is unknown to the learner.
-In other words, $\{(U_t, f_1^{(t)}, f_2^{(t)}, \dots
-f_N^{(t)})\}_{t=1}^\infty$ is an i.i.d. sequence.
+In other words, $\{(U_t, x_1^{(t)}, x_2^{(t)}, \dots
+x_N^{(t)})\}_{t=1}^\infty$ is an i.i.d. sequence.
 
 In order to define quality of a ranking, we need to define a suitable loss
 function that assigns loss to any pair $(\pi_t, U_t)$. Note that since the loss
 depends on $U_t$, it is hidden to the learner.
+
+Ranking loss
+\[
+\ell_w ( \pi , U ) = \sum_{i=1}^{| U |} w(i) c(i, \pi, U)
+\]
+where $c_{\pi}(i)$ is the size of the cover of first $i$ items with respect to $\pi$ defined as
+\[
+c(i, \pi, U ) = \min \left\{ k\in [N] : i = \#\left\{ j \in U : \pi(j) \le k\right\} \right\} \enspace .
+\]
+Particularly, by using
+\[
+w_1 ( i )  = 
+\begin{cases}
+1 & \mbox{ if } i = 1 \\
+0 & \mbox{otherwise}
+\end{cases}
+\]
+the ranking loss $\ell ( \pi , U )$ is equal to the minimal ranks of the items from $U$ with respect to $\pi$. The Min sum set cover ({\bf mssc}) problem formalizes the optimization problem of this ranking loss. More detail, for a given set of $U_1, \dots, U_n$, the gaol in {\bf mssc} is to find the permutation that minimizes
+$\tfrac{1}{n}\sum_{i=1}^{n} \ell_{w_1} ( \pi, U_n )$.
+
+The online version
+
+\section{Related work}
+
+\begin{itemize}
+	\item \cite{Ail14} $| U| =1 $
+	\item \cite{RaKlJo08}
+	\item \cite{AzarGY09}
+	\item Online learning to rank based on Random projection \cite{SchuthOWR16}
+\end{itemize}
+
+\bibliography{ltr}{}
+\bibliographystyle{plain}
 
 \end{document}
