@@ -22,10 +22,10 @@ goal of the algorithm is to minimize the total cost.
 
 After a ranking of documents is presented to a user, we receive certain
 feedback. In this paper, we consider two feedback models. In the first feedback
-model, which we call \emph{full information} feedback model, we receive the set
-of relevant documents for the user. In the second feedback model, which we call
-\emph{bandit information} feedback model, we receive only the position of the
-topmost relevant document.
+model, which we call the \emph{full information} feedback model, we receive the
+set of relevant documents for the user. In the second feedback model, which we
+call the \emph{bandit information} feedback model, we receive only the position
+of the topmost relevant document.
 
 There exist a natural \emph{offline problem} for this online problem. Given sets
 of relevant documents, one for each user, find a single ordered list of the
@@ -46,13 +46,22 @@ Let $V$ be the set of all \emph{documents} and let $n = |V|$. A \emph{ranking}
 of $V$ is a bijection $\pi:V \to \{1,2,\dots,n\}$. Given a ranking $\pi$, the
 \emph{rank} of a document $v \in V$ is $\pi(v)$. There are $T$ users numbered
 from $1,2,\dots,T$. For each user $t$ there is a non-empty set of \emph{relevant
-documents} $U_t \subseteq V$. The online problem proceeds in $T$ rounds. Each
-round $t=1,2,\dots,T$ consists of three steps:
+documents} $U_t \subseteq V$.
+
+The online problem proceeds in $T$ rounds. We distinguish between the
+full information model and the bandit information feedback model.
+In the full information feedback model, each round consists of three steps:
 \begin{enumerate}
 \item Choose a ranking $\pi_t$
-\item Receive $U_t$
+\item Observe $U_t$
 \item Incur cost $c(\pi_t, U_t) = \min_{v \in U_t} \pi_t(v)$
 \end{enumerate}
+In the bandit information feedback model, each round consists of two steps:
+\begin{enumerate}
+\item Choose a ranking $\pi_t$
+\item Observe $c(\pi_t, U_t) = \min_{v \in U_t} \pi_t(v)$ and incur the same cost
+\end{enumerate}
+
 
 \section{Related work}
 
