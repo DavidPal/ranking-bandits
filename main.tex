@@ -1,0 +1,70 @@
+\documentclass{article}
+
+\usepackage{fullpage,amssymb,amsthm,amsmath}
+\usepackage{natbib}
+
+\newcommand{\R}{\mathbb{R}}
+\DeclareMathOperator*{\argmin}{argmin}
+
+\begin{document}
+
+\title{Ranking Bandits}
+\author{R\'obert Busa-Fekete \and D\'avid P\'al}
+\maketitle
+
+\section{Introduction}
+
+We consider an online ranking problem where users arrive one by one in an online
+fashion and our goal is to present to each user an ordered list of documents. We
+assume that for each user a certain subset documents is relevant. The cost
+associated with each user is the position of the topmost relevant document. The
+goal of the algorithm is to minimize the total cost.
+
+After a ranking of documents is presented to a user, we receive certain
+feedback. In this paper, we consider two feedback models. In the first feedback
+model, which we call \emph{full information} feedback model, we receive the set
+of relevant documents for the user. In the second feedback model, which we call
+\emph{bandit information} feedback model, we receive only the position of the
+topmost relevant document.
+
+There exist a natural \emph{offline problem} for this online problem. Given sets
+of relevant documents, one for each user, find a single ordered list of the
+documents that minimizes the total cost. This problem was studied by
+\cite{Feige-Lovasz-Tetali-2004}, who showed that a simple greedy algorithm
+achieves approximation ratio $4$ and showed that achieving approximation ratio
+$4-\epsilon$ is NP-hard; for generalizations see~\cite{Azar-Gamzu-Yin-2009}.
+
+If each user's set of relevant documents has size $1$, the problem is a special
+case of learning permutations \citep{Helmbold-Warmuth-2009,
+Yasutake-Hatano-Kijima-Takimoto-Takeda-2011} and it is also a special case of
+the online ranking problem studied by~\cite{Ailon-2014}. However, the general
+problems are incomprable to ours as they use different cost functions.
+
+\section{Formal Model}
+
+Let $V$ be the set of all \emph{documents} and let $n = |V|$. A \emph{ranking}
+of $V$ is a bijection $\pi:V \to \{1,2,\dots,n\}$. Given a ranking $\pi$, the
+\emph{rank} of a document $v \in V$ is $\pi(v)$. There are $T$ users numbered
+from $1,2,\dots,T$. For each user $t$ there is a non-empty set of \emph{relevant
+documents} $U_t \subseteq V$. The online problem proceeds in $T$ rounds. Each
+round $t=1,2,\dots,T$ consists of three steps:
+\begin{enumerate}
+\item Choose a ranking $\pi_t$
+\item Receive $U_t$
+\item Incur cost $c(\pi_t, U_t) = \min_{v \in U_t} \pi_t(v)$
+\end{enumerate}
+
+\section{Related work}
+
+\begin{itemize}
+\item \cite{Ailon-2014} $|U| = 1$
+\item \cite{Helmbold-Warmuth-2009}, \cite{Yasutake-Hatano-Kijima-Takimoto-Takeda-2011} $|U| = 1$
+\item \cite{Feige-Lovasz-Tetali-2004}, \cite{Azar-Gamzu-Yin-2009}
+\item \cite{Radlinski-Kleinberg-Joachims-2008}
+\item Online learning to rank based on Random projection \cite{Schuth-Oosterhuis-Whiteson-de-Rijke-2016}
+\end{itemize}
+
+\bibliography{biblio}
+\bibliographystyle{plainnat}
+
+\end{document}
