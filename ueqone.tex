@@ -1,0 +1,45 @@
+\documentclass{article}
+
+\usepackage{fullpage,amssymb,amsthm,amsmath}
+\usepackage{natbib}
+
+\newcommand{\R}{\mathbb{R}}
+\DeclareMathOperator*{\argmin}{argmin}
+
+\begin{document}
+
+\begin{itemize}
+  \item $| U_t | =1$ for all $t \in [T]$
+  \item $r_{i,t}$ is the indicator of vertex $i$ covered by $U_t$
+  \[
+  r_{i,t} = 
+  \begin{cases}
+  	1, & \mbox{if~~} i \in U_t \\
+	0, & \mbox{otherwise}
+  \end{cases}	
+  \]
+  \item Clearly $\sum_{i=1}^n r_{i,t} = 1$ for all $t \in [T]$, because $| U_t | =1$
+  \item The $g_i$ score of vertex $i$ is defined as $g_i = \sum_{t=1}^T r_{i,t}$
+  \item The cost of optimal algorithm $\sum_{i=1}^n i g_{\pi (i )}$ where $\pi$ sorts the vertexes in a decreasing order with respect to their greedy scores
+  \item Clearly, $\sum_{i=1}^n g_i = T$
+\end{itemize}
+Assume that $R= [r_{i,j}]$ is given. Then the cost of the optimal algorithm can be computed as the value of an optimization task as:
+\begin{equation*}
+	\begin{array}{ll@{}ll}
+	\text{maximize}  & \displaystyle \sum_{i=1}^{n} \sum_{j=1}^{n} y_{i,j} g_j \\ % \qquad \qquad (=G( \bx ; \bw ) ) \\
+	\text{subject to}& \displaystyle \sum_{j=1}^{n} y_{i,j} & = i &\quad \forall i \in [n]  \\
+	             &  y_{i,j} & \in [0,1] & \quad \forall i,j \in [n]
+\end{array}
+\end{equation*}
+Note that $\sum_{i=1}^{n} \sum_{j=1}^{n} y_{i,j} g_j = \sum_{t=1}^T \sum_{i=1}^{n} \sum_{j=1}^{n} y_{i,j} r_{j,t}$. Then the cost of the greedy algorithm can be computed as the value of a linear program in a similar way as follows.
+\begin{equation*}
+	\begin{array}{ll@{}ll}
+	\text{maximize}  & \displaystyle \sum_{t=1}^T \sum_{i=1}^{n} \sum_{j=1}^{n} y_{i,j,t} r_{j,t} \\ % \qquad \qquad (=G( \bx ; \bw ) ) \\
+	\text{subject to}& \displaystyle \sum_{j=1}^{n} y_{i,j,t} & = i &\quad \forall i \in [n], \forall t \in [T]  \\
+	             &  y_{i,j,t} & \in [0,1] & \quad \forall i,j \in [n], \forall t \in [T]
+\end{array}
+\end{equation*}
+
+
+
+\end{document}
