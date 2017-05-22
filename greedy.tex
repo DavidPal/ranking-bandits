@@ -1,0 +1,179 @@
+\documentclass[12pt]{article}
+
+\usepackage{fullpage,amssymb,amsthm,amsmath}
+\usepackage{natbib}
+
+\newtheorem{lemma}{Lemma}
+\newtheorem{theorem}[lemma]{Theorem}
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\indicator}{\mathbf{1}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\Exp}{\mathbf{E}}
+
+\DeclareMathOperator{\cost}{\mathbf{cost}}
+\DeclareMathOperator{\greedy}{\mathbf{greedy}}
+\DeclareMathOperator{\online}{\mathbf{online}}
+\DeclareMathOperator{\opt}{\mathbf{opt}}
+
+\begin{document}
+
+\title{Analysis of Greedy for $|U|=1$}
+\author{D\'avid P\'al}
+\maketitle
+
+\section{Notation}
+
+Let $N$ be a positive integer. Let $S_N$ be the set of all permutations of
+$\{1,2,\dots,N\}$. In other words, $S_N$ is the set of all bijections from
+$\{1,2,\dots,N\}$ to $\{1,2,\dots,N\}$. For a permutation $\pi \in S_N$ and a
+vector $f \in \N^N$, we define the cost
+$$
+\cost(\pi,f) = \sum_{i=1}^N i \cdot f[\pi(i)] \; .
+$$
+Clearly, for any fixed $f \in \N^N$, a permutation $\pi$
+is a minimizer of $\cost(\pi,f)$ if and only if
+$$
+f[\pi(1)] \ge f[\pi(2)] \ge \dots \ge f[\pi(N)] \; .
+$$
+For a given vector $f \in \N^N$, we denote by $\pi^*(f) = \argmin_{\pi \in S_N}
+\cost(\pi, f)$. If there are multiple minimizers, we take the lexicographically
+smallest one. Recall that a permutation $\pi \in S_N$ is lexicographically
+smaller than a permutation $\pi' \in S_N$ if and only if there exists an index
+$i \in \{1,2,\dots,N\}$ such that $\pi(1) = \pi'(1), \pi(2) = \pi'(2), \dots, \pi(i - 1) = \pi'(i -
+1)$ and $\pi(i) < \pi'(i)$.
+
+
+\section{Online Problem}
+
+Let $e_i \in \N^N$ be a vector $i$-th vector of the standard basis.
+That is, $e_i$ has coordinates $e_i[j] = \indicator\{i=j\}$
+for $j=1,2,\dots,N$.
+
+Let $a_1, a_2, \dots, a_T \in \{1,2,\dots,N\}$ be any sequence
+and let $v_1, v_2, \dots, v_T$ where $v_t = e_{a_t}$ be the associated sequence
+of standard basis vectors. Consider the partial sums
+$$
+f_t = \sum_{s=1}^t v_s \qquad \text{for $t=0,1,2,\dots,T$}.
+$$
+
+\emph{Online greedy algorithm} chooses in round $t$ the permutation $\pi^*(f_{t-1})$
+and pays $\cost(\pi^*(f_{t-1}), v_t)$. Its total cost over $T$ rounds is
+$$
+\greedy = \sum_{t=1}^T \cost(\pi^*(f_{t-1}), v_t) \; .
+$$
+
+The cost of the optimal permutation in hindsight is
+$$
+\opt
+= \min_{\pi \in S_N} \sum_{t=1}^T \cost(\pi, v_t)
+= \min_{\pi \in S_N} \cost(\pi, f_T)
+= \cost(\pi^*(f_T), f_T) \; .
+$$
+
+Our main result is that
+
+\begin{theorem}
+$$
+\greedy \le 2 \cdot \opt + \, N^2 \; .
+$$
+\end{theorem}
+
+\begin{proof}
+Consider an algorithm that in round $t$ chooses permutation $\pi^*(f_t)$.
+In other words, the algorithm has one step look ahead. Let
+$$
+\online = \sum_{t=1}^T \cost(\pi^*(f_t), v_t)
+$$
+be its cost. We will relate $\online$ to $\greedy$ and $\opt$.
+
+First, we claim that
+\begin{equation}
+\label{equation:claim}
+\online \le \opt \; .
+\end{equation}
+We prove the claim by induction on the number of rounds $T$. For that purpose,
+we introduce subscripts to $\online$ and $\opt$. Namely, let $\online_T =
+\sum_{t=1}^T \cost(\pi^*(f_t), v_t)$ and let $\opt_T = \min_{\pi \in S_N}
+\sum_{t=1}^T \cost(\pi, v_t)$. In the base case $T=0$, we have $\online_T = 0$
+and $\opt_T = 0$. For $T \ge 1$, the claim follows from the chain of
+inequalities below:
+\begin{align*}
+\online_T
+& = \sum_{t=1}^T \cost(\pi^*(f_t), v_t) \\
+& = \online_{T-1} + \cost(\pi^*(f_T), v_T) \\
+& \le \opt_{T-1} + \cost(\pi^*(f_T), v_T) \\
+& = \cost(\pi^*(f_{T-1}), f_{T-1}) + \cost(\pi^*(f_T), v_T) \\
+& = \min_{\pi \in S_N} \cost(\pi, f_{T-1}) + \cost(\pi^*(f_T), v_T) \\
+& \le \cost(\pi^*(f_T), f_{T-1}) + \cost(\pi^*(f_T), v_T) \\
+& = \opt_T \; .
+\end{align*}
+Above, the first inequality follows by induction hypothesis and
+the second inequality is obvious.
+
+The claim \eqref{equation:claim} implies that we can upper bound $\greedy$ as
+$$
+\greedy
+= (\greedy - \online) + \online
+\le (\greedy - \online) + \opt \; .
+$$
+Hence, we see that it remains to upper bound the difference
+$$
+\greedy - \online = \sum_{t=1}^T \cost(\pi^*(f_{t-1}), v_t) - \cost(\pi^*(f_t), v_t) \; .
+$$
+For notational convenience, let $\pi_t = \pi^*(f_t)$ and recall that $\pi_t$ is
+the permutation that puts entries of $f_t$ in decreasing order (breaking ties
+according to the index). Since $f_t = f_{t-1} + v_t$ and $v_t = e_{a_t}$, the
+permutation $\pi_t$ can be obtained by simple modification of $\pi_{t-1}$.
+Namely, let $i_t, j_t \in \{1,2,\dots,N\}$ be the indices such that $a_t =
+\pi_{t-1}(i) = \pi_t(j)$. It easy to see that $j \le i$ and
+$$
+\pi^t(k) =
+\begin{cases}
+\pi^{t-1}(k) & \text{if $k < j$ or $k > i$} \; ,  \\
+\pi^{t-1}(k-1) & \text{if $j < k \le i$} \; , \\
+\pi^{t-1}(k) & \text{if $j = k$} \; . \\
+\end{cases}
+$$
+In other words, the element $a_t$ moves from index $i_t$ to a smaller or equal
+index $j_t$ and all other elements from $\{1,2,\dots,N\} \setminus \{a_t\}$ keep
+their relative order. That is, elements between $j_t$ and $i_t$ shift by one and
+remaining elements stay at their positions.
+
+Since, $v_t = e_{a_t}$ is an indicator vector,
+$$
+\cost(\pi^*(f_{t-1}), v_t) - \cost(\pi^*(f_t), v_t) = i_t - j_t \; .
+$$
+Equivalently, $i_t - j_t$ can be expressed as the number of elements that are
+``pushed'' by the element $a_t$. Formally,
+\begin{align*}
+i_t - j_t
+& = |\{ k \in \{1,2,\dots,N\} ~:~ \pi_t(k) = \pi_{t-1}(k-1) \}| \\
+& = |\{ b \in \{1,2,\dots,N\} ~:~ \pi_t^{-1}(b) = \pi_{t-1}^{-1}(b) + 1 \}| \; .
+\end{align*}
+We have
+\begin{align*}
+\greedy - \online
+& = \sum_{t=1}^T \cost(\pi^*(f_{t-1}), v_t) - \cost(\pi^*(f_t), v_t) \\
+& = \sum_{t=1}^T i_t - j_t \\
+& = \sum_{t=1}^T \sum_{b=1}^N \indicator\{\pi_t^{-1}(b) = \pi_{t-1}^{-1}(b) + 1 \} \\
+\end{align*}
+Consider any elements $a,b \in \{1,2,\dots,N\}$ such that $a < b$. When $a$
+pushes $b$ at time step $t$ it must be $f_t[a] = f_t[b]$. Since every time step
+$a$ pushes $b$, its frequency $f_t[a]$ grows by one. Therefore the number of
+pushes $a$ by $b$ is at most $\min\{f_T[a], f_T[b]\}$. Similarly, if $a > b$,
+the number of pushes $a$ by $b$ is at most $\min\{f_T[a], f_T[b] + 1\}$.
+Thus,
+\begin{align*}
+& \sum_{t=1}^T \sum_{a=1}^N \indicator\{\pi_t^{-1}(a) = \pi_{t-1}^{-1}(a) + 1 \} \\
+& \le
+\sum_{1 \le a < b \le N} \min\{f_T[a], f_T[b]\} +
+\sum_{1 \le b < a \le N} \min\{f_T[a], f_T[b] + 1\} \\
+& =
+\sum_{1 \le a < b \le N} \sum_{f=1}^\infty \indicator\{f_T[a] \le f \wedge f_T[b] \le f\}
++ \sum_{1 \le b < a \le N} \sum_{f=1}^\infty \indicator\{f_T[a] \le f \wedge f_T[b] + 1 \le f\} \\
+\end{align*}
+\end{proof}
+TODO
+\end{document}
