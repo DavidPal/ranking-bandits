@@ -76,7 +76,7 @@ Our main result is that
 
 \begin{theorem}
 $$
-\greedy \le 2 \cdot \opt + \, N^2 \; .
+\greedy \le 3 \cdot \opt + \binom{N}{2} \; .
 $$
 \end{theorem}
 
@@ -129,11 +129,11 @@ permutation $\pi_t$ can be obtained by simple modification of $\pi_{t-1}$.
 Namely, let $i_t, j_t \in \{1,2,\dots,N\}$ be the indices such that $a_t =
 \pi_{t-1}(i) = \pi_t(j)$. It easy to see that $j \le i$ and
 $$
-\pi^t(k) =
+\pi_t(k) =
 \begin{cases}
-\pi^{t-1}(k) & \text{if $k < j$ or $k > i$} \; ,  \\
-\pi^{t-1}(k-1) & \text{if $j < k \le i$} \; , \\
-\pi^{t-1}(k) & \text{if $j = k$} \; . \\
+\pi_{t-1}(k) & \text{if $k < j$ or $k > i$} \; ,  \\
+\pi_{t-1}(k-1) & \text{if $j < k \le i$} \; , \\
+\pi_{t-1}(k) & \text{if $j = k$} \; . \\
 \end{cases}
 $$
 In other words, the element $a_t$ moves from index $i_t$ to a smaller or equal
@@ -159,21 +159,30 @@ We have
 & = \sum_{t=1}^T i_t - j_t \\
 & = \sum_{t=1}^T \sum_{b=1}^N \indicator\{\pi_t^{-1}(b) = \pi_{t-1}^{-1}(b) + 1 \} \\
 \end{align*}
-Consider any elements $a,b \in \{1,2,\dots,N\}$ such that $a < b$. When $a$
-pushes $b$ at time step $t$ it must be $f_t[a] = f_t[b]$. Since every time step
-$a$ pushes $b$, its frequency $f_t[a]$ grows by one. Therefore the number of
-pushes $a$ by $b$ is at most $\min\{f_T[a], f_T[b]\}$. Similarly, if $a > b$,
-the number of pushes $a$ by $b$ is at most $\min\{f_T[a], f_T[b] + 1\}$.
+Consider any pair of elements $a,b \in \{1,2,\dots,N\}$ such that $a < b$. When
+$a$ pushes $b$ at time step $t$ it must be $f_t[a] = f_t[b]$. Every time step
+$a$ pushes $b$, the frequency $f_t[a]$ grows by one. Therefore the number of
+times $a$ pushes $b$ is at most $\min\{f_T[a], f_T[b]\}$. Similarly, if $a > b$,
+the number of times $a$ pushes $b$ is at most $\min\{f_T[a], f_T[b] + 1\}$.
 Thus,
 \begin{align*}
-& \sum_{t=1}^T \sum_{a=1}^N \indicator\{\pi_t^{-1}(a) = \pi_{t-1}^{-1}(a) + 1 \} \\
+& \sum_{t=1}^T \sum_{a=1}^N \indicator\{\pi_t^{-1}(b) = \pi_{t-1}^{-1}(b) + 1 \} \\
 & \le
 \sum_{1 \le a < b \le N} \min\{f_T[a], f_T[b]\} +
 \sum_{1 \le b < a \le N} \min\{f_T[a], f_T[b] + 1\} \\
 & =
-\sum_{1 \le a < b \le N} \sum_{f=1}^\infty \indicator\{f_T[a] \le f \wedge f_T[b] \le f\}
-+ \sum_{1 \le b < a \le N} \sum_{f=1}^\infty \indicator\{f_T[a] \le f \wedge f_T[b] + 1 \le f\} \\
+\sum_{1 \le a < b \le N} \sum_{f=1}^\infty \indicator\{f \le f_T[a] \wedge f \le f_T[b] \}
++ \sum_{1 \le b < a \le N} \sum_{f=1}^\infty \indicator\{f \le f_T[a] \wedge f \le f_T[b] + 1 \} \\
+& = 2  \sum_{1 \le a < b \le N} \sum_{f=1}^\infty \indicator\{f \le f_T[a] \wedge f \le f_T[b] \} + \sum_{1 \le b < a \le N} \sum_{f=1}^\infty \indicator\{f \le f_T[a] \wedge f = f_T[b] + 1 \} \\
+& \le 2 \sum_{f=1}^\infty \sum_{1 \le a < b \le N} \indicator\{f \le f_T[a] \wedge f \le f_T[b] \} + \binom{N}{2} \\
+& = 2 \sum_{f=1}^\infty \binom{|\{a : f_T[a] \ge f \}|}{2} + \binom{N}{2} \\
+& = 2 \sum_{f=1}^\infty \sum_{i=1}^{|\{a : f_T[a] \ge f \}|} (i - 1) + \binom{N}{2} \\
+& \le 2 \sum_{f=1}^\infty \sum_{i=1}^{|\{a : f_T[a] \ge f \}|} i + \binom{N}{2} \\
+& = 2 \opt + \binom{N}{2} \; .
 \end{align*}
 \end{proof}
-TODO
+
+Remark: The bound might be somewhat loose. It is likely that the constant $3$
+can be improved. Similarly, the $O(N^2)$ additive term can be either decreased
+to $O(N)$, perhaps at the expense at slightly increasing the constant $3$.
 \end{document}
